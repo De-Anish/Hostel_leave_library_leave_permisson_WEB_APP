@@ -1,0 +1,54 @@
+-- 1. Drop the old database if it exists
+DROP DATABASE IF EXISTS library_attendance;
+
+-- 2. Create the new database
+CREATE DATABASE library_attendance;
+USE library_attendance;
+
+-- 3. Create Students table
+CREATE TABLE Students (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    roll_no VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    hostel_name VARCHAR(100),
+    room_number VARCHAR(50),
+    photo LONGBLOB  -- actual image data
+);
+
+-- 4. Create QRLog table (depends on Students)
+CREATE TABLE QRLog (
+    qr_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    generated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    out_time DATETIME,
+    status VARCHAR(20),
+    FOREIGN KEY (student_id) REFERENCES Students(student_id) ON DELETE CASCADE
+);
+
+-- 5. Create LibraryLogs table (depends on Students and QRLog)
+CREATE TABLE LibraryLogs (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    qr_id INT,
+    in_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    out_time DATETIME,
+    FOREIGN KEY (student_id) REFERENCES Students(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (qr_id) REFERENCES QRLog(qr_id) ON DELETE SET NULL
+);
+
+-- 6. Create FaceEncodings table (depends on Students)
+CREATE TABLE FaceEncodings (
+    student_id INT PRIMARY KEY,
+    encoding_data LONGBLOB NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES Students(student_id) ON DELETE CASCADE
+);
+
+-- 7. Create Warden table
+CREATE TABLE Warden (
+    warden_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    hostel_name VARCHAR(100)
+);
+SELECT * FROM Students;
