@@ -203,4 +203,4 @@ pip install -r requirements.txt
 ## 👨‍💻 Author
 
 Made by Anish De  
-CSE Student | QTel Diversity Program
+CSE Student | KIIT UNIVERSITY
