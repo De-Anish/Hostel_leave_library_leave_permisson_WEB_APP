@@ -200,13 +200,7 @@ pip install -r requirements.txt
 
 ---
 
-## 👨‍💻 Author
 
-Made by Anish De  
-CSE Student | QTel Diversity Program
-
-
----
 
 ## 🖥️ Frontend (Project_api_web)
 
@@ -231,4 +225,11 @@ The frontend application is located in the `Project_api_web` folder and provides
 ---
 
 This architecture ensures security, accurate tracking, and efficient attendance logging across different stages of student movement.
+---
+## 👨‍💻 Author
 
+Made by Anish De  
+CSE Student | QTel Diversity Program
+
+
+---
