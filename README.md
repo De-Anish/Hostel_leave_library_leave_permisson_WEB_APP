@@ -229,7 +229,7 @@ This architecture ensures security, accurate tracking, and efficient attendance 
 ## 👨‍💻 Author
 
 Made by Anish De  
-CSE Student | QTel Diversity Program
+CSE Student | KIIT UNIVERSITY
 
 
 ---
