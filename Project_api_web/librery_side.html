@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Library Exit QR Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --dark: #1b263b;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+            --error: #f72585;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        h2 {
+            color: var(--dark);
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 1.8rem;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:disabled {
+            background: #adb5bd;
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 25px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-item {
+            margin-bottom: 12px;
+            text-align: left;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .result-item strong {
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        img {
+            max-width: 200px;
+            margin: 20px auto;
+            border: 1px solid #e9ecef;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        img:hover {
+            transform: scale(1.03);
+        }
+        
+        .error {
+            color: var(--error);
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            animation: shake 0.5s ease;
+        }
+        
+        .success {
+            color: var(--success);
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Library Exit QR Generator</h2>
+
+        <div class="input-group">
+            <label for="rollNo">Enter Your Roll Number</label>
+            <input type="text" id="rollNo" placeholder="e.g. 22051920" />
+        </div>
+
+        <button id="generateBtn">
+            <span id="btnText">Generate Exit QR</span>
+        </button>
+
+        <div class="result" id="result"></div>
+        <div class="error" id="error"></div>
+    </div>
+
+<script>
+    const generateBtn = document.getElementById('generateBtn');
+    const btnText = document.getElementById('btnText');
+    const rollNoInput = document.getElementById('rollNo');
+    const resultDiv = document.getElementById('result');
+    const errorDiv = document.getElementById('error');
+
+    generateBtn.addEventListener('click', async () => {
+        errorDiv.textContent = '';
+        resultDiv.innerHTML = '';
+        const roll_no = rollNoInput.value.trim();
+        
+        if (!roll_no) {
+            errorDiv.textContent = 'Please enter a valid roll number.';
+            return;
+        }
+
+        generateBtn.disabled = true;
+        btnText.innerHTML = `<span class="loading"></span> Generating QR Code...`;
+
+        try {
+            const response = await fetch('http://localhost:5006/api/library/exit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ roll_no })
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                errorDiv.textContent = data.error || 'Something went wrong. Please try again.';
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="result-card">
+                        <div class="result-item">
+                            <strong>Name:</strong> ${data.name}
+                        </div>
+                        <div class="result-item">
+                            <strong>Roll No:</strong> ${data.roll_no}
+                        </div>
+                        <div class="result-item">
+                            <strong>Phone Number:</strong> ${data.phone_number}
+                        </div>
+                        <div class="result-item">
+                            <strong>Exit Time:</strong> ${data.out_time}
+                        </div>
+                        <img src="${data.qr_image}" alt="Library Exit QR Code" />
+                        <p class="success">Scan this QR code at the library exit</p>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            errorDiv.textContent = 'Unable to connect to server. Please try again later.';
+        } finally {
+            generateBtn.disabled = false;
+            btnText.textContent = 'Generate Exit QR';
+        }
+    });
+</script>
+
+</body>
+</html>
