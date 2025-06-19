@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Registration with Webcam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #3f37c9;
+      --accent: #4895ef;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4cc9f0;
+      --error: #f72585;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+    }
+    
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+    
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 500;
+      color: var(--dark);
+      font-size: 0.9rem;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+    
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="tel"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+    }
+    
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.75rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .message {
+      margin-top: 1.5rem;
+      font-weight: 500;
+      text-align: center;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    
+    .error {
+      color: var(--error);
+      background-color: rgba(247, 37, 133, 0.1);
+      border: 1px solid rgba(247, 37, 133, 0.2);
+    }
+    
+    .success {
+      color: var(--success);
+      background-color: rgba(76, 201, 240, 0.1);
+      border: 1px solid rgba(76, 201, 240, 0.2);
+    }
+    
+    #video, #canvas {
+      display: block;
+      margin: 1rem auto;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    #video:hover, #canvas:hover {
+      transform: scale(1.01);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    #captureBtn {
+      margin-top: 1rem;
+      background-color: var(--secondary);
+    }
+    
+    #captureBtn:hover {
+      background-color: #3730a3;
+    }
+    
+    .required::after {
+      content: " *";
+      color: var(--error);
+    }
+    
+    .webcam-container {
+      position: relative;
+      margin: 1.5rem 0;
+    }
+    
+    .webcam-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+    }
+    
+   
+    
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Student Registration</h2>
+
+    <form id="studentForm">
+      <label for="name" class="required">Name</label>
+      <input type="text" id="name" name="name" required placeholder="Enter full name" />
+
+      <label for="roll_no" class="required">Roll Number</label>
+      <input type="text" id="roll_no" name="roll_no" required placeholder="Enter roll number" />
+
+      <label for="email" class="required">Email</label>
+      <input type="email" id="email" name="email" required placeholder="student@example.com" />
+
+      <label for="phone_number" class="required">Phone Number</label>
+      <input type="tel" id="phone_number" name="phone_number" required pattern="[0-9]{10}" placeholder="10 digit number" />
+
+      <label for="hostel_name" class="required">Hostel Name</label>
+      <input type="text" id="hostel_name" name="hostel_name" required placeholder="Enter hostel name" />
+
+      <label for="room_number" class="required">Room Number</label>
+      <input type="text" id="room_number" name="room_number" required placeholder="Enter room number" />
+
+      <label class="required">Student Photo</label>
+      <div class="webcam-container">
+        <video id="video" autoplay playsinline width="320" height="240"></video>
+        <div class="webcam-overlay"></div>
+      </div>
+      <button type="button" id="captureBtn">Capture Photo</button>
+      <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+
+      <button type="submit">Register Student</button>
+    </form>
+
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureBtn = document.getElementById('captureBtn');
+    const messageDiv = document.getElementById('message');
+    let capturedBlob = null;
+
+    // Access webcam stream
+    async function startWebcam() {
+      try {
+        const constraints = {
+          video: { 
+            width: { ideal: 640 },
+            height: { ideal: 480 },
+            facingMode: 'user'
+          },
+          audio: false
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = stream;
+      } catch (error) {
+        messageDiv.textContent = 'Error accessing webcam: ' + error.message;
+        messageDiv.className = 'message error';
+      }
+    }
+
+    startWebcam();
+
+    // Capture photo from video stream to canvas and convert to blob
+    captureBtn.addEventListener('click', () => {
+      const context = canvas.getContext('2d');
+      
+      // Adjust canvas size to match video aspect ratio
+      const aspectRatio = video.videoWidth / video.videoHeight;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.style.display = 'block';
+
+      canvas.toBlob(blob => {
+        capturedBlob = blob;
+        messageDiv.textContent = 'Photo captured successfully! Ready to submit.';
+        messageDiv.className = 'message success';
+        
+        // Show preview for 3 seconds
+        const preview = document.createElement('div');
+        preview.innerHTML = '<p>Photo Preview:</p>';
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(blob);
+        img.style.maxWidth = '100px';
+        img.style.borderRadius = '4px';
+        img.style.marginTop = '8px';
+        preview.appendChild(img);
+        messageDiv.appendChild(preview);
+        
+        setTimeout(() => {
+          preview.remove();
+        }, 3000);
+      }, 'image/jpeg', 0.85); // 0.85 quality
+    });
+
+    // Handle form submit
+    document.getElementById('studentForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      messageDiv.textContent = '';
+      messageDiv.className = 'message';
+
+      if (!capturedBlob) {
+        messageDiv.textContent = 'Please capture a photo first!';
+        messageDiv.className = 'message error';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('name', e.target.name.value);
+      formData.append('roll_no', e.target.roll_no.value);
+      formData.append('email', e.target.email.value);
+      formData.append('phone_number', e.target.phone_number.value);
+      formData.append('hostel_name', e.target.hostel_name.value);
+      formData.append('room_number', e.target.room_number.value);
+      formData.append('photo', capturedBlob, 'student_photo.jpg');
+
+      try {
+        // Show loading state
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Processing...';
+        submitBtn.style.backgroundColor = '#6c757d';
+
+        const response = await fetch('http://localhost:5000/api/admin/add-student', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          messageDiv.textContent = data.message || 'Student registered successfully!';
+          messageDiv.className = 'message success';
+          e.target.reset();
+          canvas.style.display = 'none';
+          capturedBlob = null;
+        } else {
+          messageDiv.textContent = data.error || 'Failed to register student';
+          messageDiv.className = 'message error';
+        }
+      } catch (error) {
+        messageDiv.textContent = 'Network error: ' + error.message;
+        messageDiv.className = 'message error';
+      } finally {
+        // Reset button state
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Register Student';
+        submitBtn.style.backgroundColor = '';
+      }
+    });
+  </script>
+</body>
+</html>
