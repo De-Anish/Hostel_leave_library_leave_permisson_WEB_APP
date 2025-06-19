@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student QR Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-light: #4895ef;
+      --secondary: #3f37c9;
+      --accent: #7209b7;
+      --dark: #1b263b;
+      --light: #f8f9fa;
+      --success: #4cc9f0;
+      --error: #f72585;
+      --warning: #f8961e;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+      width: 100%;
+      max-width: 500px;
+      padding: 40px;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    h2 {
+      color: var(--dark);
+      text-align: center;
+      margin-bottom: 25px;
+      font-weight: 600;
+      font-size: 2rem;
+      background: linear-gradient(to right, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .input-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--dark);
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    
+    button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+      margin: 10px 0;
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    button:disabled {
+      background: #adb5bd;
+      transform: none;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+    
+    button::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%);
+      transform-origin: 50% 50%;
+    }
+    
+    button:focus:not(:active)::after {
+      animation: ripple 1s ease-out;
+    }
+    
+    @keyframes ripple {
+      0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(20, 20);
+        opacity: 0;
+      }
+    }
+    
+    .qr-section {
+      margin-top: 30px;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transform: scale(0.95);
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+    
+    .qr-section.show {
+      transform: scale(1);
+      opacity: 1;
+    }
+    
+    .welcome-message {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .welcome-message h3 {
+      color: var(--dark);
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+    }
+    
+    .welcome-message p {
+      color: #6c757d;
+      font-size: 1rem;
+    }
+    
+    .qr-container {
+      margin: 25px 0;
+      text-align: center;
+    }
+    
+    .qr-container h4 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .qr-container h4::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(to right, var(--primary), var(--accent));
+      border-radius: 3px;
+    }
+    
+    img {
+      width: 200px;
+      margin: 15px auto;
+      border: 1px solid #e9ecef;
+      padding: 10px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      display: block;
+    }
+    
+    img:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    #message {
+      color: var(--error);
+      margin: 15px 0;
+      text-align: center;
+      font-size: 0.95rem;
+      min-height: 20px;
+    }
+    
+    .success-message {
+      color: var(--success) !important;
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: var(--primary);
+      opacity: 0;
+      top: 0;
+      left: 50%;
+      animation: confetti 5s ease-in-out;
+    }
+    
+    @keyframes confetti {
+      0% { 
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% { 
+        transform: translateY(1000px) rotate(720deg);
+        opacity: 0;
+      }
+    }
+    
+    .login-form {
+      transition: all 0.5s ease;
+    }
+    
+    .login-form.hide {
+      transform: translateY(-20px);
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .btn-text {
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2 class="animate__animated animate__fadeInDown">Student QR Login</h2>
+
+    <div id="message"></div>
+
+    <div class="login-form" id="loginForm">
+      <div class="input-group">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="Enter your university email" required />
+      </div>
+
+      <button onclick="requestOTP()" id="otpBtn">
+        <span class="btn-text">Request OTP</span>
+      </button>
+
+      <div class="input-group">
+        <label>Verification Code</label>
+        <input type="text" id="otp" placeholder="Enter the 6-digit OTP" required />
+      </div>
+
+      <button onclick="submitOTP()" id="loginBtn">
+        <span class="btn-text">Login to Portal</span>
+      </button>
+    </div>
+
+    <div id="qrSection" class="qr-section">
+      <div class="welcome-message">
+        <h3>Welcome, <span id="studentName"></span>!</h3>
+        <p><strong>Roll No:</strong> <span id="rollNo"></span></p>
+      </div>
+
+      <div class="qr-container">
+        <h4>Hostel QR Code</h4>
+        <img id="hostelQR" />
+        <p>Scan at Library</p>
+      </div>
+
+      <div class="qr-container">
+        <h4>Library QR Code</h4>
+        <img id="libraryQR" />
+        <p>Scan at Your Hostel</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const apiBase = "http://localhost:5007";  // change if hosted
+    let otpRequested = false;
+
+    function createConfetti() {
+      const colors = ['#4361ee', '#3f37c9', '#7209b7', '#4895ef', '#4cc9f0'];
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.width = Math.random() * 10 + 5 + 'px';
+          confetti.style.height = confetti.style.width;
+          document.querySelector('.container').appendChild(confetti);
+          
+          // Remove confetti after animation
+          setTimeout(() => {
+            confetti.remove();
+          }, 5000);
+        }, i * 100);
+      }
+    }
+
+    function requestOTP() {
+      const email = document.getElementById('email').value;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
+      if (!emailRegex.test(email)) {
+        showMessage('Please enter a valid email address', 'error');
+        return;
+      }
+      
+      const otpBtn = document.getElementById('otpBtn');
+      otpBtn.disabled = true;
+      document.querySelector('#otpBtn .btn-text').innerHTML = 
+        `<span class="loading"></span>Sending OTP...`;
+      
+      // Simulate API call with timeout
+      setTimeout(() => {
+        fetch(`${apiBase}/request-otp`, {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            showMessage(data.error, 'error');
+          } else {
+            showMessage(`OTP sent to ${email}`, 'success');
+            otpRequested = true;
+            document.getElementById('otp').focus();
+          }
+        })
+        .catch(() => {
+          showMessage('Failed to send OTP. Please try again.', 'error');
+        })
+        .finally(() => {
+          otpBtn.disabled = false;
+          document.querySelector('#otpBtn .btn-text').textContent = 'Request OTP';
+        });
+      }, 1500);
+    }
+
+    function submitOTP() {
+      const email = document.getElementById('email').value;
+      const otp = document.getElementById('otp').value;
+      
+      if (!otpRequested) {
+        showMessage('Please request an OTP first', 'error');
+        return;
+      }
+      
+      if (otp.length !== 6 || !/^\d+$/.test(otp)) {
+        showMessage('Please enter a valid 6-digit OTP', 'error');
+        return;
+      }
+      
+      const loginBtn = document.getElementById('loginBtn');
+      loginBtn.disabled = true;
+      document.querySelector('#loginBtn .btn-text').innerHTML = 
+        `<span class="loading"></span>Verifying...`;
+      
+      // Simulate API call with timeout
+      setTimeout(() => {
+        fetch(`${apiBase}/login`, {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            showMessage(data.error, 'error');
+          } else {
+            showMessage('Login successful!', 'success');
+            document.getElementById('loginForm').classList.add('hide');
+            
+            setTimeout(() => {
+              document.getElementById('qrSection').classList.add('show');
+              document.getElementById('studentName').textContent = data.student_info.name;
+              document.getElementById('rollNo').textContent = data.student_info.roll_no;
+              document.getElementById('hostelQR').src = data.hostel_qr_code;
+              document.getElementById('libraryQR').src = data.library_qr_code;
+              createConfetti();
+            }, 500);
+          }
+        })
+        .catch(() => {
+          showMessage('Login failed. Please try again.', 'error');
+        })
+        .finally(() => {
+          loginBtn.disabled = false;
+          document.querySelector('#loginBtn .btn-text').textContent = 'Login to Portal';
+        });
+      }, 1500);
+    }
+
+    function showMessage(message, type) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = message;
+      messageDiv.className = type === 'error' ? '' : 'success-message';
+      
+      // Add animation
+      messageDiv.classList.add('animate__animated', 'animate__fadeIn');
+      setTimeout(() => {
+        messageDiv.classList.remove('animate__animated', 'animate__fadeIn');
+      }, 1000);
+    }
+  </script>
+
+</body>
+</html>
